@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Monolitico</title> 
+
+ 
+<!-- <video> tag, with the @controls attribute
+     giving it the play/pause/seeker controls,
+     and the @loop making it automatically loop. --> 
+</head>
+	<body>
+		<video width="300" height="150" controls="" loop="" autoplay=""> 
+			<!-- I have two versions of the video encoded with
+			     different codecs.  The browser will automatically
+			     choose the first one it knows it can play. --> 
+			<source src="video.webm" type="video/webm"> 
+		</video> 
+
+ 
+<style> 
+	video{
+  position: fixed;
+  top: 50%; left: 50%;
+  z-index: 1;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  transform: translate(-50%, -50%);
+}
+	}
+</style>
+ 	</body>
+</html>
