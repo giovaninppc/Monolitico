@@ -59,17 +59,24 @@
 
 },false);
 
+function createGradient(){
+	var my_gradient=c.createRadialGradient(0,0,200,800,600,100);
+	my_gradient.addColorStop(0.3,"black");
+	my_gradient.addColorStop(0.6,"red");
+}
 function draw(v,c,w,h) {
     if(v.paused || v.ended) return false;
 
     c.drawImage(v,0,0,w,h);
-    c.fillStyle = "#888"; // gray colour
-    c.globalAlpha = 10;   // amount of FX
+
+	c.fillStyle='#'+Math.floor(Math.random()*16777215).toString(16);
+
+    c.globalAlpha = 100;   // amount of FX
     c.globalCompositeOperation = "color";  // The comp setting to do BLACK/WHITE
     c.fillRect(0,0,w,h);  // Draw gray over the video
     c.globalAlpha = 1;  // reset alpha
     c.globalCompositeOperation = "source-over";  // reset comp
-    setTimeout(draw,20,v,c,w,h);
+    setTimeout(draw,50,v,c,w,h);
  
 }
 </script>
