@@ -42,33 +42,74 @@
 
 
 <script>
+
 	var color='#'+Math.floor(Math.random()*16777215).toString(16);
+	var colorR = Math.floor(Math.random()*256);          
+	var colorG = Math.floor(Math.random()*256);          
+	var colorB = Math.floor(Math.random()*256); 
+
+	var speed = 20; // higher is slower
+
+	function componentToHex(c) {
+	    var hex = c.toString(16);
+	    return hex.length == 1 ? "0" + hex : hex;
+	}
+
+	function rgbToHex(r, g, b) {
+	    return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+	}
+
+
 	document.addEventListener('DOMContentLoaded', function(){
 
-	
-    var v = document.getElementById('v');
-    var canvas = document.getElementById('c');
-    var context = canvas.getContext('2d');
+	    var v = document.getElementById('v');
+	    var canvas = document.getElementById('c');
+	    var context = canvas.getContext('2d');
 
-    var cw = Math.floor(canvas.clientWidth / 1);
-    var ch = Math.floor(canvas.clientHeight / 1);
-    canvas.width = cw;
-    canvas.height = ch;
+	    var cw = Math.floor(canvas.clientWidth / 1);
+	    var ch = Math.floor(canvas.clientHeight / 1);
+	    canvas.width = cw;
+	    canvas.height = ch;
 
-    
-    window.setInterval(function(){
-    	color='#'+Math.floor(Math.random()*16777215).toString(16);
-    }, 1000);
+	    
+	    window.setInterval(function(){ // update colors every 1 second  
+
+	    	//CHANGE THE RANDOM TO SOMETHING THAT ACTUALLY USES THE SENSOR DATA
+	    	colorR = Math.floor(Math.random()*256);          
+	    	colorG = Math.floor(Math.random()*256);          
+	    	colorB = Math.floor(Math.random()*256);    
+
+	    	color = rgbToHex(colorR,colorG,colorB)
+	    }, 1000);
 
 
 
-    v.addEventListener('play', function(){
-        draw(this,context,cw,ch);
-    },false);
+	    v.addEventListener('play', function(){
+	        draw(this,context,cw,ch);
+	    },false);
 
 },false);
 
 
+function fadeOutRectangle(c, x, y, w, h, r, g, b) {
+	console.log("fadeOutRectangle");
+    var steps = 50,
+        dr = (r - previousR) / steps, // how much red should be added each time
+        dg = (g - previousG) / steps, // green
+        db = (b - previousR) / steps, // blue
+        i = 0, // step counter
+        interval = setInterval(function() {
+            c.fillStyle = 'rgb(' + Math.round(r + dr * i) + ','
+                                   + Math.round(g + dg * i) + ','
+                                   + Math.round(b + db * i) + ')';
+            c.globalAlpha = 0.1
+            c.fillRect(x, y, w, h); // will redraw the area each time
+            i++;
+            if(i === steps) { // stop if done
+                clearInterval(interval);
+            }
+        }, 20);
+}
 
 function draw(v,c,w,h) {
     if(v.paused || v.ended) return false;
@@ -76,13 +117,14 @@ function draw(v,c,w,h) {
     c.drawImage(v,0,0,w,h);
 
 	c.fillStyle=color;
+	c.globalAlpha = 0.01;
+	c.fillRect(0,0,w,h);
 
-    c.globalAlpha = 100;   // amount of FX
-    c.globalCompositeOperation = "color";  // The comp setting to do BLACK/WHITE
-    c.fillRect(0,0,w,h);  // Draw gray over the video
-    c.globalAlpha = 1;  // reset alpha
-    c.globalCompositeOperation = "source-over";  // reset comp
-    setTimeout(draw,50,v,c,w,h);
+    //fadeOutRectangle(c,0,0,w,h,colorR,colorG,colorB)
+
+    //speed when the user shakes the monolith (in this case, higher speed value means slower transition)
+    setTimeout(draw,speed,v,c,w,h);
+
  
 }
 </script>
