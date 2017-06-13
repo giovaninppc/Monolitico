@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<script src="jquery-3.2.1.min.js"></script>
 <title>Monolitico</title> 
 
  
@@ -9,13 +10,15 @@
 </head>
 	<body>
 		<canvas id=c></canvas>
-		<canvas id=b></canvas>
+		<canvas id=b style="z-index: 0"></canvas>
 		<video id=v width="300" height="150" controls="" loop="" autoplay=""> 
 			<!-- I have two versions of the video encoded with
 			     different codecs.  The browser will automatically
 			     choose the first one it knows it can play. --> 
 			<source src="video.mp4" type="video/mp4"> 
-		</video> 
+		</video>
+		<button onclick="getAndAlert()" style="z-index: 2; position: absolute; top: 0px; left: 0px">Get sensors data</button>
+
 
  
 <style> 
@@ -27,6 +30,7 @@
     right: 0;
     width: 100%;
     height: 100%;
+    z-index: 1
 }
 #v {
     position: absolute;
@@ -37,6 +41,7 @@
 }
 	}
 </style>
+
  	</body>
 </html>
 
@@ -60,6 +65,30 @@
 	    return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
 	}
 
+	var HttpClient = function() {
+	    this.get = function(aUrl, aCallback) {
+	        var anHttpRequest = new XMLHttpRequest();
+	        anHttpRequest.onreadystatechange = function() { 
+	            if (anHttpRequest.readyState == 4 && anHttpRequest.status == 200)
+	                aCallback(anHttpRequest.responseText);
+	        }
+
+	        anHttpRequest.open( "GET", aUrl, true );            
+	        anHttpRequest.send( null );
+	    }
+	}
+
+  	var client = new HttpClient();
+
+  	function getAndAlert(){
+
+	     client.get('https://io.adafruit.com/api/v2/giovaninppc/feeds/temp/data/last', function(response) {
+	    	var obj = JSON.parse(response)
+	    	alert("Temperature = "+obj.value+"\n")
+	    });
+
+
+ 	};
 
 	document.addEventListener('DOMContentLoaded', function(){
 

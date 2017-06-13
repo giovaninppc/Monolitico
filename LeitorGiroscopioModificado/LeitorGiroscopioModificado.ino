@@ -36,8 +36,8 @@ int16_t CGyY = 140;
 int16_t CGyZ = -220;
  
 // Definições da rede Wifi
-const char* SSID = "MGR";
-const char* PASSWORD = "margiroz";
+const char* SSID = "Marmita";
+const char* PASSWORD = "periquito";
  
 //Adafruit IO
 #define AIO_SERVER       "io.adafruit.com"
