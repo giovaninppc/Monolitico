@@ -47,6 +47,7 @@
 	var colorR = Math.floor(Math.random()*256);          
 	var colorG = Math.floor(Math.random()*256);          
 	var colorB = Math.floor(Math.random()*256); 
+	var alphaColor = 0.01;
 
 	var speed = 20; // higher is slower
 
@@ -81,6 +82,12 @@
 
 	    	color = rgbToHex(colorR,colorG,colorB)
 	    }, 1000);
+
+	    window.setInterval(function(){ // update playback speed and color alpha shenenigans every 3 seconds
+	    	document.getElementById('v').playbackRate = Math.random() * 10
+	    	alphaColor = (Math.floor(Math.random() * (5 - 1 + 1)) + 1)/100
+	    }, 3000);
+
 
 
 
@@ -117,7 +124,7 @@ function draw(v,c,w,h) {
     c.drawImage(v,0,0,w,h);
 
 	c.fillStyle=color;
-	c.globalAlpha = 0.01;
+	c.globalAlpha = alphaColor
 	c.fillRect(0,0,w,h);
 
     //fadeOutRectangle(c,0,0,w,h,colorR,colorG,colorB)
