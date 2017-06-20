@@ -15,7 +15,7 @@
 			<!-- I have two versions of the video encoded with
 			     different codecs.  The browser will automatically
 			     choose the first one it knows it can play. --> 
-			<source src="video.mp4" type="video/mp4"> 
+			<source src="video2.mp4" type="video/mp4"> 
 		</video>
 		<button onclick="getAndAlert()" style="z-index: 2; position: absolute; top: 0px; left: 0px">Get sensors data</button>
 
@@ -53,6 +53,10 @@
 	var colorG = Math.floor(Math.random()*256);          
 	var colorB = Math.floor(Math.random()*256); 
 	var alphaColor = 0.01;
+	var temper;
+	var gyro;
+	var speed;
+	var timerzinho = 0;
 
 	var speed = 20; // higher is slower
 
@@ -83,10 +87,17 @@
   	function getAndAlert(){
 
 	     client.get('https://io.adafruit.com/api/v2/giovaninppc/feeds/temp/data/last', function(response) {
-	    	var obj = JSON.parse(response)
-	    	alert("Temperature = "+obj.value+"\n")
+	    	temper = JSON.parse(response)
+	    	//alert("Temperature = "+temper.value+"\n")
 	    });
-
+	     client.get('https://io.adafruit.com/api/v2/giovaninppc/feeds/gyx/data/last', function(response) {
+	    	gyro = JSON.parse(response)
+	    	//alert("GyX = "+gyro.value+"\n")
+	    });
+	     client.get('https://io.adafruit.com/api/v2/giovaninppc/feeds/acx/data/last', function(response) {
+	    	speed = JSON.parse(response)
+	    	//alert("Speed = "+speed.value+"\n")
+	    });
 
  	};
 
@@ -102,12 +113,18 @@
 	    canvas.height = ch;
 
 	    
-	    window.setInterval(function(){ // update colors every 1 second  
+	    window.setInterval(function(){ // update colors every 1 second
+
+	    	if(timerzinho > 5){
+	    		getAndAlert();
+	    		timerzinho = 0;
+	    	}
+	    	timerzinho = timerzinho + 1;
 
 	    	//CHANGE THE RANDOM TO SOMETHING THAT ACTUALLY USES THE SENSOR DATA
-	    	colorR = Math.floor(Math.random()*256);          
-	    	colorG = Math.floor(Math.random()*256);          
-	    	colorB = Math.floor(Math.random()*256);    
+	    	colorR = Math.floor(Math.random()*200);
+	    	colorG = Math.floor(Math.random()*20 + Math.abs(parseInt(speed.value)*0.1) );
+	    	colorB = Math.floor(Math.random()*20 + Math.abs(parseInt(gyro.value)*0.1) );
 
 	    	color = rgbToHex(colorR,colorG,colorB)
 	    }, 1000);
