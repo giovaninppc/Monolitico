@@ -17,8 +17,6 @@
 			     choose the first one it knows it can play. --> 
 			<source src="Video2.mp4" type="video/mp4"> 
 		</video>
-		<button onclick="getAndAlert()" style="z-index: 2; position: absolute; top: 0px; left: 0px">Get sensors data</button>
-
 
  
 <style> 
@@ -130,7 +128,7 @@
 	    }, 1000);
 
 	    window.setInterval(function(){ // update playback speed and color alpha shenenigans every 3 seconds
-	    	document.getElementById('v').playbackRate = Math.random() * 10
+	    	document.getElementById('v').playbackRate = Math.abs(parseInt(speed.value)*0.005);
 	    	alphaColor = (Math.floor(Math.random() * (5 - 1 + 1)) + 1)/100
 	    }, 3000);
 
