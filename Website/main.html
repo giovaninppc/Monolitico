@@ -15,7 +15,7 @@
 			<!-- I have two versions of the video encoded with
 			     different codecs.  The browser will automatically
 			     choose the first one it knows it can play. --> 
-			<source src="video2.mp4" type="video/mp4"> 
+			<source src="Video2.mp4" type="video/mp4"> 
 		</video>
 		<button onclick="getAndAlert()" style="z-index: 2; position: absolute; top: 0px; left: 0px">Get sensors data</button>
 
@@ -122,9 +122,9 @@
 	    	timerzinho = timerzinho + 1;
 
 	    	//CHANGE THE RANDOM TO SOMETHING THAT ACTUALLY USES THE SENSOR DATA
-	    	colorR = Math.floor(Math.random()*200);
-	    	colorG = Math.floor(Math.random()*20 + Math.abs(parseInt(speed.value)*0.1) );
-	    	colorB = Math.floor(Math.random()*20 + Math.abs(parseInt(gyro.value)*0.1) );
+	    	colorR = Math.floor(Math.random()*255);
+	    	colorG = Math.floor(Math.random()*20 + Math.abs(parseInt(speed.value)*0.01) );
+	    	colorB = Math.floor(Math.random()*20 + Math.abs(parseInt(gyro.value)*0.01) );
 
 	    	color = rgbToHex(colorR,colorG,colorB)
 	    }, 1000);
