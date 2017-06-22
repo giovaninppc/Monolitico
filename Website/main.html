@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
-<script src="jquery-3.2.1.min.js"></script>
 <title>Monolitico</title> 
 
  
@@ -18,7 +17,6 @@
 			<source src="Video2.mp4" type="video/mp4"> 
 		</video>
 
- 
 <style> 
 #c {
     position: absolute;
@@ -50,13 +48,12 @@
 	var colorR = Math.floor(Math.random()*256);          
 	var colorG = Math.floor(Math.random()*256);          
 	var colorB = Math.floor(Math.random()*256); 
-	var alphaColor = 0.01;
+	var alphaColor = (Math.floor(Math.random() * (5 - 1 + 1)) + 1)/100
 	var temper;
 	var gyro;
 	var speed;
 	var timerzinho = 0;
-
-	var speed = 20; // higher is slower
+	var changeFlag = 0;
 
 	function componentToHex(c) {
 	    var hex = c.toString(16);
@@ -84,20 +81,71 @@
 
   	function getAndAlert(){
 
+  		console.log("I LOVE ALL LIVING THINGS AND LIFE IS BEAUTIFUL")
+
 	     client.get('https://io.adafruit.com/api/v2/giovaninppc/feeds/temp/data/last', function(response) {
 	    	temper = JSON.parse(response)
 	    	//alert("Temperature = "+temper.value+"\n")
 	    });
+
 	     client.get('https://io.adafruit.com/api/v2/giovaninppc/feeds/gyx/data/last', function(response) {
+	     	console.log("Getting gyx...")
 	    	gyro = JSON.parse(response)
+	    	if(gyro.value != 0){
+	    		console.log("Changing changeFlag to 1");
+	    		changeFlag = 1;
+	    	}
+	    	else{
+	    		console.log("Chaning changeFlag to 0");
+	    		changeFlag = 0;
+	    	}
 	    	//alert("GyX = "+gyro.value+"\n")
 	    });
+
 	     client.get('https://io.adafruit.com/api/v2/giovaninppc/feeds/acx/data/last', function(response) {
 	    	speed = JSON.parse(response)
 	    	//alert("Speed = "+speed.value+"\n")
 	    });
 
+	     if(changeFlag != 0){
+	     	 if(Math.abs(parseInt(speed.value)) > 4000){
+	     	 	console.log("Speed > 4000")
+	     	 	colorR = 180 + Math.floor(Math.random()*75);
+	     	 	colorG = 30 + Math.floor(Math.random()*50);
+	     	 	colorB = 30 + Math.floor(Math.random()*50);
+	     	 	document.getElementById('v').playbackRate = 4;
+
+	     	 }
+	     	 else if(Math.abs(parseInt(speed.value)) > 2000){
+	     	 	console.log("Speed > 2000")
+	     	 	colorR = 140 + Math.floor(Math.random()*115);
+	     	 	colorG = 40 + Math.floor(Math.random()*60);
+	     	 	colorB = 40 + Math.floor(Math.random()*60);
+	     	 	document.getElementById('v').playbackRate = 2;
+
+	     	 }
+	     	 else{
+	     	 	console.log("Kinda slow")
+		     	colorR = 40 + Math.floor(Math.random()*60);
+		     	colorG = 40 + Math.floor(Math.random()*60);
+		     	colorB = 40 + Math.floor(Math.random()*60);
+		     	document.getElementById('v').playbackRate = 1;
+		 	}
+		 }
+
+		 else{
+			 console.log("We are standing!")
+			 colorR = 40 + Math.floor(Math.random()*60);
+			 colorG = 40 + Math.floor(Math.random()*60);
+			 colorB = 40 + Math.floor(Math.random()*60);
+			 document.getElementById('v').playbackRate = 1;	
+		 } 
+
+	     alphaColor = (Math.floor(Math.random() * (5 - 1 + 1)) + 1)/100
+	     color = rgbToHex(colorR,colorG,colorB);
+
  	};
+
 
 	document.addEventListener('DOMContentLoaded', function(){
 
@@ -112,28 +160,12 @@
 
 	    
 	    window.setInterval(function(){ // update colors every 1 second
-
 	    	if(timerzinho > 5){
 	    		getAndAlert();
 	    		timerzinho = 0;
 	    	}
 	    	timerzinho = timerzinho + 1;
-
-	    	//CHANGE THE RANDOM TO SOMETHING THAT ACTUALLY USES THE SENSOR DATA
-	    	colorR = Math.floor(Math.random()*255);
-	    	colorG = Math.floor(Math.random()*20 + Math.abs(parseInt(speed.value)*0.01) );
-	    	colorB = Math.floor(Math.random()*20 + Math.abs(parseInt(gyro.value)*0.01) );
-
-	    	color = rgbToHex(colorR,colorG,colorB)
-	    }, 1000);
-
-	    window.setInterval(function(){ // update playback speed and color alpha shenenigans every 3 seconds
-	    	document.getElementById('v').playbackRate = Math.abs(parseInt(speed.value)*0.005);
-	    	alphaColor = (Math.floor(Math.random() * (5 - 1 + 1)) + 1)/100
-	    }, 3000);
-
-
-
+	    }, 767);
 
 	    v.addEventListener('play', function(){
 	        draw(this,context,cw,ch);
@@ -142,25 +174,6 @@
 },false);
 
 
-function fadeOutRectangle(c, x, y, w, h, r, g, b) {
-	console.log("fadeOutRectangle");
-    var steps = 50,
-        dr = (r - previousR) / steps, // how much red should be added each time
-        dg = (g - previousG) / steps, // green
-        db = (b - previousR) / steps, // blue
-        i = 0, // step counter
-        interval = setInterval(function() {
-            c.fillStyle = 'rgb(' + Math.round(r + dr * i) + ','
-                                   + Math.round(g + dg * i) + ','
-                                   + Math.round(b + db * i) + ')';
-            c.globalAlpha = 0.1
-            c.fillRect(x, y, w, h); // will redraw the area each time
-            i++;
-            if(i === steps) { // stop if done
-                clearInterval(interval);
-            }
-        }, 20);
-}
 
 function draw(v,c,w,h) {
     if(v.paused || v.ended) return false;
@@ -174,7 +187,7 @@ function draw(v,c,w,h) {
     //fadeOutRectangle(c,0,0,w,h,colorR,colorG,colorB)
 
     //speed when the user shakes the monolith (in this case, higher speed value means slower transition)
-    setTimeout(draw,speed,v,c,w,h);
+    setTimeout(draw,20,v,c,w,h);
 
  
 }
