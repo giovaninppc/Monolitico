@@ -36,8 +36,8 @@ int16_t CGyY = 140;
 int16_t CGyZ = -220;
  
 // Definições da rede Wifi
-const char* SSID = "Marmita";
-const char* PASSWORD = "periquito";
+const char* SSID = "Moto G (4) 5173";
+const char* PASSWORD = "NathyHarumi";
  
 //Adafruit IO
 #define AIO_SERVER       "io.adafruit.com"
@@ -80,7 +80,7 @@ void loop() {
   calibrateValues();
   publishValues();
   
-  delay(500);
+  delay(2000);
 }
 
 /*Arredonda todos os valores obtidos pelo sensor em multiplos de 250*/
